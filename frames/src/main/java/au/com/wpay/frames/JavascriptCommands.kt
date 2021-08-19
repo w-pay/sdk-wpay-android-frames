@@ -10,7 +10,9 @@ const val JS_SDK_VERSION = "2.0.2"
  */
 open class JavascriptCommand(val command: String) {
     /**
-     * Syntactic sugar for [FramesView#postCommand]
+     * Allows commands to define how their posted into a [FramesView]
+     *
+     * This method should be called on commands, instead of [FramesView#postCommand]
      *
      * If there is a JS evaluation error, the callback will still be invoked.
      * Use logcat with the "chromium" tag to search for evaluation errors if the callback
@@ -65,9 +67,7 @@ class BuildFramesCommand(
             $JS_NAMESPACE.handleOnRendered();
         }
         catch(e) {
-            console.error(`frames.build: $\{e}`)
-            
-            $JS_NAMESPACE.handleOnError(e.message);
+            frames.handleError('build', e)
         }
     };
     
@@ -88,7 +88,13 @@ class BuildFramesCommand(
  */
 object FramesSDKLoadCommand : JavascriptCommand(
     """
-    const frames = {};
+    const frames = {
+        handleError: function(fnName, err) {
+            console.error('frames.' + fnName + ': ' + err)
+            
+            $JS_NAMESPACE.handleOnError(err.message);
+        }
+    };
     
     frames.init = function() {
        var tag = document.createElement("script");
@@ -148,5 +154,27 @@ object StartActionCommand : DelayedJavascriptCommand(
     frames.startAction = async function() {
         await frames.action.start();
     }
+    """.trimMargin()
+)
+
+object ClearFormCommand : JavascriptCommand(
+    "frames.action.clear()"
+)
+
+object SubmitFormCommand : JavascriptCommand(
+    """
+    frames.submit = async function() {
+        try {
+            await this.action.submit()
+            
+            const response = await this.action.complete()
+            $JS_NAMESPACE.handleOnComplete(JSON.stringify(response))
+        }
+        catch(e) {
+            frames.handleError('submit', e)
+        }
+    }
+    
+    frames.submit();
     """.trimMargin()
 )

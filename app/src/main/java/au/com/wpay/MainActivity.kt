@@ -49,13 +49,16 @@ class MainActivity : AppCompatActivity(), FramesView.Callback {
              */
             framesView.loadFrames(
                 FramesConfig(
-                    apiKey = "ukUfDqw5A39a2rKIxCMVuNvg3IBA7oHv",
-                    authToken = "Bearer cauPxIUvA3AAGDmERgfV13bSxCWE",
+                    apiKey = "95udD3oX82JScUQ1qyACSOMysyAl93Gb",
+                    authToken = "Bearer pnKkbw7c3xCeg3qKVxLTt0QOaDqu",
                     apiBase = "https://dev.mobile-api.woolworths.com.au/wow/v1/pay/instore",
                     logLevel = LogLevel.DEBUG
                 )
             )
         }
+
+        findViewById<Button>(R.id.submitBtn).setOnClickListener { SubmitFormCommand.post(framesView) }
+        findViewById<Button>(R.id.clearBtn).setOnClickListener { ClearFormCommand.post(framesView) }
     }
 
     override fun onComplete(response: String) {
@@ -83,16 +86,22 @@ class MainActivity : AppCompatActivity(), FramesView.Callback {
     override fun onPageLoaded() {
         debug("onPageLoaded()")
 
+        val captureOptions = ActionType.CaptureCard.Payload(
+            verify = true,
+            save = true,
+            env3DS = null
+        )
+
         /*
          * Step 3.
          *
          * Add a single line card group to the page
          */
-        framesView.postCommand(BuildFramesCommand(
-            ActionType.CaptureCard().toCommand(),
+        BuildFramesCommand(
+            ActionType.CaptureCard(captureOptions).toCommand(),
             StartActionCommand,
             CreateActionControlCommand(ControlType.CARD_GROUP,"cardElement")
-        ))
+        ).post(framesView)
     }
 
     override fun onRendered() {
