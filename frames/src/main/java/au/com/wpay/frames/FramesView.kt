@@ -7,8 +7,11 @@ import android.net.http.SslError
 import android.util.AttributeSet
 import android.webkit.*
 import au.com.wpay.frames.types.FramesConfig
+import org.json.JSONArray
 import java.io.IOException
 import java.net.URLConnection
+
+typealias EvalCallback = ((String) -> Unit)
 
 /**
  * Hosts the Frames JS SDK inside an Android WebView.
@@ -27,7 +30,9 @@ import java.net.URLConnection
  * 4. HTML elements are "rendered" on the page. Once rendered, the elements can be interacted with
  * by the user and events are emitted.
  *
- * 5. The
+ * 5. As the user interacts with the web elements, events are emitted and passed to the the callback
+ * 6. The user can submit the form, or clear the form.
+ * 7. After form submission, the application should complete the action.
  */
 class FramesView @JvmOverloads constructor(
     context: Context,
@@ -61,11 +66,21 @@ class FramesView @JvmOverloads constructor(
          */
         fun onProgressChanged(progress: Int)
 
-        // TODO: Which element has changed validation?
-        fun onValidationChange(isValid: Boolean)
+        /**
+         * Called when the validation status of an element has changed.
+         *
+         * @param domId The ID of the element in the HTML DOM tree
+         * @param isValid Whether the contents of the element is valid or not.
+         */
+        fun onValidationChange(domId: String, isValid: Boolean)
 
-        // TODO: Which element has changed focus?
-        fun onFocusChange(isFocussed: Boolean)
+        /**
+         * Called when the focus has changed on an element
+         *
+         * @param domId The ID of the element in the HTML DOM tree
+         * @param isFocussed Whether the element is focussed or not
+         */
+        fun onFocusChange(domId: String, isFocussed: Boolean)
 
         /**
          * Called when all the web content has been loaded and the Frames JS SDK is ready to
@@ -93,7 +108,6 @@ class FramesView @JvmOverloads constructor(
     private var logger: Logger? = null
 
     init {
-        // TODO: Should this be configurable?
         setWebContentsDebuggingEnabled(true)
         initialiseWebView()
     }
@@ -143,7 +157,7 @@ class FramesView @JvmOverloads constructor(
      * @param command The command to execute
      * @param callback If the JS returns a result, the callback will receive it.
      */
-    fun postCommand(command: JavascriptCommand, callback: ((String) -> Unit)? = null) {
+    fun postCommand(command: JavascriptCommand, callback: EvalCallback? = null) {
         val js = command.command
 
         log("JavascriptCommand: $js")
@@ -165,6 +179,58 @@ class FramesView @JvmOverloads constructor(
                 callback?.onPageLoaded()
             }
             else -> callback?.onError(FatalError("Error loading FramesSDK."))
+        }
+    }
+
+    @JavascriptInterface
+    fun handleOnBlur(domId: String) {
+        log("handleOnBlur($domId)")
+
+        post {
+            callback?.onFocusChange(domId, isFocussed = false)
+        }
+    }
+
+    @JavascriptInterface
+    fun handleOnError(message: String) {
+        log("handleOnError($message")
+
+        post {
+            callback?.onError(EvalError(message))
+        }
+    }
+
+    @JavascriptInterface
+    fun handleOnFocus(domId: String) {
+        log("handleOnFocus($domId)")
+
+        post {
+            callback?.onFocusChange(domId, isFocussed = true)
+        }
+    }
+
+    @JavascriptInterface
+    fun handleOnRendered() {
+        log("handleOnRendered()")
+
+        post {
+            callback?.onRendered()
+        }
+    }
+
+    @JavascriptInterface
+    fun handleOnValidated(domId: String, jsonString: String) {
+        log("handleOnValidated($domId, $jsonString)")
+
+        val errors = JSONArray(jsonString)
+        when {
+            errors.length() > 0 -> post {
+                callback?.onValidationChange(domId, isValid = false)
+                callback?.onError(FormError(errors.optString(0)))
+            }
+            else -> post {
+                callback?.onValidationChange(domId, isValid = true)
+            }
         }
     }
 

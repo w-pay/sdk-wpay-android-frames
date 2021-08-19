@@ -5,9 +5,9 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.TextView
-import au.com.wpay.frames.DebugLogger
-import au.com.wpay.frames.FramesError
-import au.com.wpay.frames.FramesView
+import au.com.wpay.frames.*
+import au.com.wpay.frames.types.ActionType
+import au.com.wpay.frames.types.ControlType
 import au.com.wpay.frames.types.FramesConfig
 import au.com.wpay.frames.types.LogLevel
 
@@ -41,16 +41,16 @@ class MainActivity : AppCompatActivity(), FramesView.Callback {
             logger = DebugLogger()
         )
 
-        /*
-         * Step 2.
-         *
-         * Load the Frames SDK into the HTML page.
-         */
         findViewById<Button>(R.id.loadBtn).setOnClickListener {
+            /*
+             * Step 2.
+             *
+             * Load the Frames SDK into the HTML page.
+             */
             framesView.loadFrames(
                 FramesConfig(
                     apiKey = "ukUfDqw5A39a2rKIxCMVuNvg3IBA7oHv",
-                    authToken = "Bearer oXu6KSry3DyYQazsECxGg30CfaY1",
+                    authToken = "Bearer cauPxIUvA3AAGDmERgfV13bSxCWE",
                     apiBase = "https://dev.mobile-api.woolworths.com.au/wow/v1/pay/instore",
                     logLevel = LogLevel.DEBUG
                 )
@@ -72,16 +72,27 @@ class MainActivity : AppCompatActivity(), FramesView.Callback {
         debug("onProgressChanged(progress: $progress)")
     }
 
-    override fun onValidationChange(isValid: Boolean) {
-        debug("onValidationChange(isValid: $isValid)")
+    override fun onValidationChange(domId: String, isValid: Boolean) {
+        debug("onValidationChange($domId, isValid: $isValid)")
     }
 
-    override fun onFocusChange(isFocussed: Boolean) {
-        debug("onFocusChange(isFocussed: $isFocussed)")
+    override fun onFocusChange(domId: String, isFocussed: Boolean) {
+        debug("onFocusChange($domId, isFocussed: $isFocussed)")
     }
 
     override fun onPageLoaded() {
         debug("onPageLoaded()")
+
+        /*
+         * Step 3.
+         *
+         * Add a single line card group to the page
+         */
+        framesView.postCommand(BuildFramesCommand(
+            ActionType.CaptureCard().toCommand(),
+            StartActionCommand,
+            CreateActionControlCommand(ControlType.CARD_GROUP,"cardElement")
+        ))
     }
 
     override fun onRendered() {
