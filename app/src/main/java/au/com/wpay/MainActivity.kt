@@ -6,6 +6,7 @@ import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import au.com.wpay.frames.*
+import au.com.wpay.frames.dto.CardCaptureResponse
 import au.com.wpay.frames.types.ActionType
 import au.com.wpay.frames.types.ControlType
 import au.com.wpay.frames.types.FramesConfig
@@ -50,7 +51,7 @@ class MainActivity : AppCompatActivity(), FramesView.Callback {
             framesView.loadFrames(
                 FramesConfig(
                     apiKey = "95udD3oX82JScUQ1qyACSOMysyAl93Gb",
-                    authToken = "Bearer pnKkbw7c3xCeg3qKVxLTt0QOaDqu",
+                    authToken = "Bearer jbst7UCKR695D93j8tfAd5fG7k2m",
                     apiBase = "https://dev.mobile-api.woolworths.com.au/wow/v1/pay/instore",
                     logLevel = LogLevel.DEBUG
                 )
@@ -63,6 +64,11 @@ class MainActivity : AppCompatActivity(), FramesView.Callback {
 
     override fun onComplete(response: String) {
         debug("onComplete(response: $response)")
+
+        val data = CardCaptureResponse.fromJson(response)
+        val message = "${data.status?.responseText} - ${data.paymentInstrument?.itemId}"
+
+        errorTextView.text = message
     }
 
     override fun onError(error: FramesError) {

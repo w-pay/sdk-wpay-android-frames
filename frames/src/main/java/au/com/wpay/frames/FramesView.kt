@@ -194,6 +194,10 @@ class FramesView @JvmOverloads constructor(
     @JavascriptInterface
     fun handleOnComplete(jsonString: String) {
         log("handleOnComplete($jsonString)")
+
+        post {
+            callback?.onComplete(jsonString)
+        }
     }
 
     @JavascriptInterface
