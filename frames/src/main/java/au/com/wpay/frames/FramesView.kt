@@ -178,7 +178,7 @@ class FramesView @JvmOverloads constructor(
 
                 callback?.onPageLoaded()
             }
-            else -> callback?.onError(FatalError("Error loading FramesSDK."))
+            else -> callback?.onError(SdkInitError("FRAMES not found in window"))
         }
     }
 
