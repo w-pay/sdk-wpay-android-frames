@@ -13,7 +13,7 @@ import au.com.wpay.frames.types.FramesConfig
 import au.com.wpay.frames.types.LogLevel
 
 class MainActivity : AppCompatActivity(), FramesView.Callback {
-    private lateinit var errorTextView: TextView
+    private lateinit var messageView: TextView
     private lateinit var framesView: FramesView
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,7 +21,7 @@ class MainActivity : AppCompatActivity(), FramesView.Callback {
 
         setContentView(R.layout.activity_main)
 
-        errorTextView = findViewById(R.id.errorText)
+        messageView = findViewById(R.id.messageText)
         framesView = findViewById(R.id.framesView)
 
         /*
@@ -61,7 +61,7 @@ class MainActivity : AppCompatActivity(), FramesView.Callback {
         findViewById<Button>(R.id.submitBtn).setOnClickListener { SubmitFormCommand.post(framesView) }
         findViewById<Button>(R.id.clearBtn).setOnClickListener {
           ClearFormCommand.post(framesView)
-          errorTextView.text = ""
+          messageView.text = ""
         }
     }
 
@@ -71,13 +71,13 @@ class MainActivity : AppCompatActivity(), FramesView.Callback {
         val data = CardCaptureResponse.fromJson(response)
         val message = "${data.status?.responseText} - ${data.paymentInstrument?.itemId}"
 
-        errorTextView.text = message
+        messageView.text = message
     }
 
     override fun onError(error: FramesError) {
         debug("onError(error: $error)")
 
-        errorTextView.text = error.errorMessage.toString()
+        messageView.text = error.errorMessage.toString()
     }
 
     override fun onProgressChanged(progress: Int) {

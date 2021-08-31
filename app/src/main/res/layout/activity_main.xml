@@ -8,7 +8,7 @@
     tools:context=".MainActivity"
 >
     <TextView
-        android:id="@+id/errorText"
+        android:id="@+id/messageText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toTopOf="@+id/framesView"
@@ -25,7 +25,7 @@
         app:layout_constraintBottom_toTopOf="@id/submitBtn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/errorText"
+        app:layout_constraintTop_toBottomOf="@id/messageText"
     />
 
     <Button
