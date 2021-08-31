@@ -59,7 +59,10 @@ class MainActivity : AppCompatActivity(), FramesView.Callback {
         }
 
         findViewById<Button>(R.id.submitBtn).setOnClickListener { SubmitFormCommand.post(framesView) }
-        findViewById<Button>(R.id.clearBtn).setOnClickListener { ClearFormCommand.post(framesView) }
+        findViewById<Button>(R.id.clearBtn).setOnClickListener {
+          ClearFormCommand.post(framesView)
+          errorTextView.text = ""
+        }
     }
 
     override fun onComplete(response: String) {
