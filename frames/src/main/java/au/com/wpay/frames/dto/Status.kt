@@ -5,8 +5,7 @@ import org.json.JSONObject
 data class Status(
     val auditID: String?,
     val error: Error?,
-    val esResponse: Any?,
-    val messageId: Any?,
+    val esResponse: EsResponse?,
     val responseCode: String?,
     val responseText: String?,
     val txnTime: Long?
@@ -19,8 +18,7 @@ data class Status(
             Status(
                 json.optString("auditID"),
                 json.optJSONObject("error")?.let { Error.fromJson(it) },
-                json.opt("esResponse"),
-                json.opt("messageId"),
+                json.optJSONObject("esResponse")?.let { EsResponse.fromJson(it) },
                 json.optString("responseCode"),
                 json.optString("responseText"),
                 json.optLong("txnTime")
