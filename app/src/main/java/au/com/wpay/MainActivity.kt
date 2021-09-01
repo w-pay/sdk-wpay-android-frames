@@ -35,8 +35,11 @@ class MainActivity : AppCompatActivity(), FramesView.Callback {
                  * Note: The SDK will add the required <script> tag to inject the JS SDK into the
                  * host page. Applications can however add other web content to the page to aid
                  * in styling.
+                 *
+                 * Note: The SDK will inject a default <meta> tag setting the viewport if no <meta>
+                 * tag for the viewport is provided in the host HTML.
                  */
-                html = "<html><head></head><body><div id='cardElement'></div></body></html>"
+                html = "<html><body><div id='cardElement'></div></body></html>"
             ),
             callback = this,
             logger = DebugLogger()
