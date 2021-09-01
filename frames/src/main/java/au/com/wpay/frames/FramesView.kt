@@ -174,6 +174,7 @@ class FramesView @JvmOverloads constructor(
     fun handleFramesSDKLoaded(framesLoaded: String) {
         when {
             framesLoaded.toBoolean() -> {
+                AddDefaultViewportCommand.post(this)
                 InstantiateFramesSDKCommand(this.sdkConfig.toJson()).post(this)
 
                 callback?.onPageLoaded()

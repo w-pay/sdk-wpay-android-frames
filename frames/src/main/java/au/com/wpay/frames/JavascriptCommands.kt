@@ -108,6 +108,22 @@ object FramesSDKLoadCommand : JavascriptCommand(
     """.trimMargin()
 )
 
+object AddDefaultViewportCommand: JavascriptCommand(
+    """
+    const head = document.getElementsByTagName("head")[0];
+    const metas = Array.prototype.slice.call(head.getElementsByTagName("meta"))
+    const viewport = metas.find((el) => el.getAttribute("name") === "viewport")
+
+    if (!viewport) {
+      const meta = document.createElement("meta")
+      meta.setAttribute("name", "viewport")
+      meta.setAttribute("content", "width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no")
+
+      head.appendChild(meta)
+    }
+    """.trimMargin()
+)
+
 class InstantiateFramesSDKCommand(payload: JSONObject) :
     JavascriptCommand("frames.sdk = new FRAMES.FramesSDK($payload);")
 
