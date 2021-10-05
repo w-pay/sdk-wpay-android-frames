@@ -1,4 +1,4 @@
-package au.com.wpay
+package au.com.wpay.frames.sample
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -19,6 +19,6 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("au.com.wpay", appContext.packageName)
+        assertEquals("au.com.wpay.frames.sample", appContext.packageName)
     }
 }

@@ -1,4 +1,4 @@
-package au.com.wpay
+package au.com.wpay.frames.sample
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
