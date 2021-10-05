@@ -49,6 +49,8 @@ class FramesHost : Fragment(R.layout.frames_host), FramesView.Callback {
         )
 
         view.findViewById<Button>(R.id.loadBtn).setOnClickListener {
+            messageView.text = ""
+
             /*
              * Step 2.
              *
