@@ -9,15 +9,10 @@ import androidx.fragment.app.Fragment
 import au.com.wpay.frames.*
 import au.com.wpay.frames.dto.CardCaptureResponse
 import au.com.wpay.frames.types.ActionType
-import au.com.wpay.frames.types.ControlType
 import au.com.wpay.frames.types.FramesConfig
 import au.com.wpay.frames.types.LogLevel
 
-class FramesHost : Fragment(R.layout.frames_host), FramesView.Callback {
-    companion object {
-        val HTML_KEY = "HTML"
-    }
-
+open class FramesHost(private val html: String) : Fragment(R.layout.frames_host), FramesView.Callback {
     private lateinit var messageView: TextView
     private lateinit var framesView: FramesView
 
@@ -42,7 +37,7 @@ class FramesHost : Fragment(R.layout.frames_host), FramesView.Callback {
                  * Note: The SDK will inject a default <meta> tag setting the viewport if no <meta>
                  * tag for the viewport is provided in the host HTML.
                  */
-                html = requireArguments().getString(HTML_KEY) ?: run { throw IllegalStateException("Need host HTML") }
+                html = this.html
             ),
             callback = this,
             logger = DebugLogger()
@@ -103,27 +98,26 @@ class FramesHost : Fragment(R.layout.frames_host), FramesView.Callback {
     override fun onPageLoaded() {
         debug("onPageLoaded()")
 
-        val captureOptions = ActionType.CaptureCard.Payload(
-            verify = true,
-            save = true,
-            env3DS = null
-        )
-
         /*
          * Step 3.
          *
-         * Add a single line card group to the page
+         * Override this to add card controls to action
          */
-        BuildFramesCommand(
-            ActionType.CaptureCard(captureOptions).toCommand(),
-            StartActionCommand,
-            CreateActionControlCommand(ControlType.CARD_GROUP,"cardElement")
-        ).post(framesView)
     }
 
     override fun onRendered() {
         debug("onRendered()")
     }
+
+    fun post(command: JavascriptCommand) =
+        command.post(framesView)
+
+    fun cardCaptureOptions() =
+        ActionType.CaptureCard.Payload(
+            verify = true,
+            save = true,
+            env3DS = null
+        )
 }
 
 fun debug(message: String) {
