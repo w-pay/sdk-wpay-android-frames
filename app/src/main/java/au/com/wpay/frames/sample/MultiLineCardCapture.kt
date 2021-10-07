@@ -33,8 +33,7 @@ class MultiLineCardCapture : FramesHost(HTML) {
          *
          * Add a multi line card group to the page
          */
-        post(
-            BuildFramesCommand(
+        post(BuildFramesCommand(
             ActionType.CaptureCard(cardCaptureOptions()).toCommand(),
             StartActionCommand,
             CreateActionControlCommand(ControlType.CARD_NUMBER, CARD_NO_DOM_ID),
