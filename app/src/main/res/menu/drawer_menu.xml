@@ -5,17 +5,21 @@
     tools:showIn="navigation_view"
     >
 
+    <!--
+        Having the item IDs the same as the ids in the Navigation graph means they will
+        automatically be created when the item is tapped.
+    -->
     <group
         android:checkableBehavior="single"
         >
         <item
-            android:id="@+id/singleCardCaptureItem"
+            android:id="@+id/singleCardCapture"
             android:icon="@drawable/ic_launcher_foreground"
             android:title="SingleCardCapture"
             />
 
         <item
-            android:id="@+id/multiLineCardCaptureItem"
+            android:id="@+id/multiLineCardCapture"
             android:icon="@drawable/ic_launcher_foreground"
             android:title="MultiLineCardCapture"
             />

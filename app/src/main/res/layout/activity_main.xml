@@ -8,11 +8,10 @@
     android:fitsSystemWindows="true"
     >
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
+    <include
+        layout="@layout/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        />
+        android:layout_height="match_parent" />
 
     <!-- Layout to contain contents of main body of screen -->
     <androidx.fragment.app.FragmentContainerView
