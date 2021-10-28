@@ -324,7 +324,6 @@ class FramesView @JvmOverloads constructor(
                 view as FramesView,
                 request.url.toString(),
 
-                // TODO: Should we make API 23 (Marshmellow) the min?
                 error.errorCode,
                 error.description.toString()
             )
