@@ -5,7 +5,7 @@ plugins {
 }
 
 group "au.com.wpay.frames"
-version "0.1.0"
+version "0.1.1"
 
 android {
     compileSdk 30
