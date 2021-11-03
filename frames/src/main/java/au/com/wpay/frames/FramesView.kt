@@ -168,6 +168,16 @@ class FramesView @JvmOverloads constructor(
     }
 
     /**
+     * The behaviour in the callback is often coupled to the type of actions being run
+     * by the Javascript SDK. Being able to set the callback allows applications to swap
+     * how the application will respond to events without having to implement complex
+     * Strategies or switching.
+     */
+    fun setCallback(callback: Callback) {
+        this.callback = callback
+    }
+
+    /**
      * Hook to allow the SDK to know when the JS SDK is loaded into the host HTML page.
      */
     @JavascriptInterface
