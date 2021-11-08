@@ -2,6 +2,7 @@ package au.com.wpay.frames.types
 
 import au.com.wpay.frames.CreateActionCommand
 import org.json.JSONObject
+import java.io.Serializable
 
 /**
  * Helper to create an instance of [CreateActionCommand] with some type safety.
@@ -9,7 +10,7 @@ import org.json.JSONObject
 sealed class ActionType(
     private val type: String,
     private val payload: Payload? = null
-) {
+) : Serializable {
     interface Payload {
         fun toJson(): JSONObject
     }
@@ -25,7 +26,7 @@ sealed class ActionType(
      */
     class CaptureCard(
         payload: Payload? = null
-    ) : ActionType("CaptureCard", payload) {
+    ) : ActionType("CaptureCard", payload), Serializable {
         /**
          * Options for the action.
          *
@@ -36,7 +37,7 @@ sealed class ActionType(
             val verify: Boolean,
             val save: Boolean,
             val env3DS: ThreeDSEnv?
-        ) : ActionType.Payload {
+        ) : ActionType.Payload, Serializable {
             override fun toJson() = JSONObject().apply {
                 put("verify", verify)
                 put("save", save)
@@ -53,11 +54,11 @@ sealed class ActionType(
 
     class StepUp(
         payload: Payload?
-    ) : ActionType("StepUp", payload) {
+    ) : ActionType("StepUp", payload), Serializable {
         data class Payload(
             val paymentInstrumentId: String,
             val scheme: String
-        ) : ActionType.Payload {
+        ) : ActionType.Payload, Serializable {
             override fun toJson() = JSONObject().apply {
                 put("paymentInstrumentId", paymentInstrumentId)
                 put("scheme", scheme)
@@ -67,11 +68,11 @@ sealed class ActionType(
 
     class UpdateCard(
         payload: Payload?
-    ) : ActionType("UpdateCard", payload) {
+    ) : ActionType("UpdateCard", payload), Serializable {
         data class Payload(
             val paymentInstrumentId: String,
             val scheme: String
-        ) : ActionType.Payload {
+        ) : ActionType.Payload, Serializable {
             override fun toJson() = JSONObject().apply {
                 put("paymentInstrumentId", paymentInstrumentId)
                 put("scheme", scheme)
@@ -81,12 +82,12 @@ sealed class ActionType(
 
     class ValidateCard(
         payload: Payload?
-    ) : ActionType("ValidateCard", payload) {
+    ) : ActionType("ValidateCard", payload), Serializable {
         data class Payload(
             val sessionId: String,
             val env3DS: ThreeDSEnv,
             val acsWindowSize: AcsWindowSize = AcsWindowSize.ACS_250x400
-        ) : ActionType.Payload {
+        ) : ActionType.Payload, Serializable {
             override fun toJson() = JSONObject().apply {
                 put("sessionId", sessionId)
                 put("threeDS", JSONObject().apply {

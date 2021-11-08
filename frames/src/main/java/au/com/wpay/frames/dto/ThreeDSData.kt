@@ -1,6 +1,7 @@
 package au.com.wpay.frames.dto
 
 import org.json.JSONObject
+import java.io.Serializable
 
 data class ThreeDSData(
     val actionCode: String?,
@@ -8,7 +9,7 @@ data class ThreeDSData(
     val errorNumber: Int?,
     val payment: Payment?,
     val validated: Boolean?
-){
+) : Serializable {
     companion object {
         fun fromJson(json: String) =
             fromJson(JSONObject(json))

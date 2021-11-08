@@ -1,6 +1,7 @@
 package au.com.wpay.frames.dto
 
 import org.json.JSONObject
+import java.io.Serializable
 
 data class ExtendedData(
     val amount: String?,
@@ -10,7 +11,7 @@ data class ExtendedData(
     val pAResStatus: String?,
     val signatureVerification: String?,
     val threeDSVersion: String?
-){
+) : Serializable {
     companion object {
         fun fromJson(json: String) =
             fromJson(JSONObject(json))

@@ -2,13 +2,14 @@ package au.com.wpay.frames
 
 import au.com.wpay.frames.types.ControlType
 import org.json.JSONObject
+import java.io.Serializable
 
 const val JS_SDK_VERSION = "2.0.2"
 
 /**
  * A "Javascript command" is a piece of Javascript that can be evaluated inside the [FramesView]
  */
-open class JavascriptCommand(val command: String) {
+open class JavascriptCommand(val command: String) : Serializable {
     /**
      * Allows commands to define how their posted into a [FramesView]
      *
