@@ -1,6 +1,7 @@
 package au.com.wpay.frames.dto
 
 import org.json.JSONObject
+import java.io.Serializable
 
 data class Status(
     val auditID: String?,
@@ -9,7 +10,7 @@ data class Status(
     val responseCode: String?,
     val responseText: String?,
     val txnTime: Long?
-) {
+) : Serializable {
     companion object {
         fun fromJson(json: String) =
             fromJson(JSONObject(json))

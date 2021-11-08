@@ -1,13 +1,14 @@
 package au.com.wpay.frames.dto
 
 import org.json.JSONObject
+import java.io.Serializable
 
 data class CardStepUpResponse(
     val fraudResponse: FraudResponse?,
     val itemId: Int?,
     val status: Status?,
     val stepUpToken: String?
-){
+) : Serializable {
     companion object {
         fun fromJson(json: String) =
             fromJson(JSONObject(json))

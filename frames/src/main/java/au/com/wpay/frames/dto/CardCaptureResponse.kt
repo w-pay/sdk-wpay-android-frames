@@ -1,6 +1,7 @@
 package au.com.wpay.frames.dto
 
 import org.json.JSONObject
+import java.io.Serializable
 
 data class CardCaptureResponse(
     val fraudResponse: FraudResponse?,
@@ -10,7 +11,7 @@ data class CardCaptureResponse(
     val threeDSError: ThreeDSError?,
     val message: String?,
     val threeDSToken: String?
-) {
+) : Serializable {
     companion object {
         fun fromJson(json: String): CardCaptureResponse =
             fromJson(JSONObject(json))

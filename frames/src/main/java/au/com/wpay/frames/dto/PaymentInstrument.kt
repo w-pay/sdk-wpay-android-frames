@@ -1,6 +1,7 @@
 package au.com.wpay.frames.dto
 
 import org.json.JSONObject
+import java.io.Serializable
 
 data class PaymentInstrument(
     val bin: String?,
@@ -13,7 +14,7 @@ data class PaymentInstrument(
     val scheme: String?,
     val status: String?,
     val suffix: String?
-) {
+) : Serializable {
     companion object {
         fun fromJson(json: String) =
             fromJson(JSONObject(json))
