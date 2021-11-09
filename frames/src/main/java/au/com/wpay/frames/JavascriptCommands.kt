@@ -133,8 +133,6 @@ class InstantiateFramesSDKCommand(payload: JSONObject) :
 
 /**
  * Creates an SDK Action in the web view.
- *
- * Note that this will overwrite any previous action, so make sure each action is completed.
  */
 class CreateActionCommand(
     name: String,
@@ -149,6 +147,9 @@ class CreateActionCommand(
     """.trimMargin()
 )
 
+/**
+ * Creates a control for an existing SDK Action.
+ */
 class CreateActionControlCommand(
     actionName: String,
     controlType: String,
