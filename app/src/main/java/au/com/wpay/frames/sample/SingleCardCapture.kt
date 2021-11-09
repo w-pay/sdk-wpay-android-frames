@@ -1,8 +1,7 @@
 package au.com.wpay.frames.sample
 
-import au.com.wpay.frames.BuildFramesCommand
-import au.com.wpay.frames.CreateActionControlCommand
-import au.com.wpay.frames.StartActionCommand
+import android.view.View
+import au.com.wpay.frames.*
 import au.com.wpay.frames.types.ActionType
 import au.com.wpay.frames.types.ControlType
 
@@ -10,6 +9,7 @@ class SingleCardCapture: FramesHost(HTML) {
     companion object {
         private const val DOM_ID = "cardElement"
 
+        const val ACTION_NAME = "singleCardCapture"
         const val HTML = """<html><body><div id="$DOM_ID"></div></body></html>"""
     }
 
@@ -22,9 +22,21 @@ class SingleCardCapture: FramesHost(HTML) {
          * Add a single line card group to the page
          */
         post(BuildFramesCommand(
-            ActionType.CaptureCard(cardCaptureOptions()).toCommand(),
-            StartActionCommand,
-            CreateActionControlCommand(ControlType.CARD_GROUP, DOM_ID)
+            ActionType.CaptureCard(cardCaptureOptions()).toCommand(ACTION_NAME),
+            StartActionCommand(ACTION_NAME),
+            CreateActionControlCommand(ACTION_NAME, ControlType.CARD_GROUP, DOM_ID)
         ))
+    }
+
+    override fun onSubmit(view: View) {
+        super.onSubmit(view)
+
+        post(SubmitFormCommand(ACTION_NAME))
+    }
+
+    override fun onClear(view: View) {
+        super.onClear(view)
+
+        post(ClearFormCommand(ACTION_NAME))
     }
 }

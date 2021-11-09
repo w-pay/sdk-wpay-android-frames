@@ -18,8 +18,8 @@ sealed class ActionType(
     /**
      * Converts an [ActionType] to a [CreateActionCommand]
      */
-    fun toCommand(): CreateActionCommand =
-        CreateActionCommand(type, payload?.toJson())
+    fun toCommand(name: String): CreateActionCommand =
+        CreateActionCommand(name, type, payload?.toJson())
 
     /**
      * This matches the `CaptureCard` action type in the JS SDK.

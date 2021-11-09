@@ -47,9 +47,10 @@ open class DelayedJavascriptCommand(
 ) : JavascriptCommand(command)
 
 /**
- * Combines [DelayedJavascriptCommand]s into an command and executes the result.
+ * Builds the view that is shown to the user.
  *
- * Each command is executed first to add the async function to the web view.
+ * Combines [DelayedJavascriptCommand]s into an command and executes the result. Each command is
+ * executed first to add the async function to the web view.
  *
  * If any error is thrown, it is logged and the Error's `message` is returned to the app.
  * Looking for "chromium" errors in the logs can aid developers debugging why JS code threw
@@ -94,7 +95,9 @@ object FramesSDKLoadCommand : JavascriptCommand(
             console.error('frames.' + fnName + ': ' + err)
             
             $JS_NAMESPACE.handleOnError(err.message);
-        }
+        },
+        
+        actions: {}
     };
     
     frames.init = function() {
@@ -133,58 +136,73 @@ class InstantiateFramesSDKCommand(payload: JSONObject) :
  *
  * Note that this will overwrite any previous action, so make sure each action is completed.
  */
-class CreateActionCommand(action: String, payload: JSONObject?) : DelayedJavascriptCommand(
-    "createAction",
+class CreateActionCommand(
+    name: String,
+    action: String,
+    payload: JSONObject?
+) : DelayedJavascriptCommand(
+    "createAction_$name",
     """
-    frames.createAction = async function() {
-        frames.action = frames.sdk.createAction(FRAMES.ActionTypes.$action${payload?.let { ", $it" } ?: ""});
+    frames.createAction_$name = async function() {
+        frames.actions.$name = frames.sdk.createAction(FRAMES.ActionTypes.$action${payload?.let { ", $it" } ?: ""});
     };
     """.trimMargin()
 )
 
-class CreateActionControlCommand(controlType: String, domId: String, payload: JSONObject?) : DelayedJavascriptCommand(
+class CreateActionControlCommand(
+    actionName: String,
+    controlType: String,
+    domId: String,
+    payload: JSONObject?
+) : DelayedJavascriptCommand(
     "createActionControl_$domId",
     """
     frames.createActionControl_$domId = async function() {
-        frames.action.createFramesControl('$controlType', '$domId'${payload?.let { ", $it" } ?: ""});
+        frames.actions.$actionName.createFramesControl('$controlType', '$domId'${payload?.let { ", $it" } ?: ""});
         
         const element = document.getElementById('$domId');
-        element.addEventListener(FRAMES.FramesEventType.OnValidated, () => { $JS_NAMESPACE.handleOnValidated('$domId', JSON.stringify(frames.action.errors())) });
+        element.addEventListener(FRAMES.FramesEventType.OnValidated, () => { $JS_NAMESPACE.handleOnValidated('$domId', JSON.stringify(frames.actions.$actionName.errors())) });
         element.addEventListener(FRAMES.FramesEventType.OnBlur, () => { $JS_NAMESPACE.handleOnBlur('$domId') });
         element.addEventListener(FRAMES.FramesEventType.OnFocus, () => { $JS_NAMESPACE.handleOnFocus('$domId') });
     }
     """.trimMargin()
 ) {
-    constructor(controlType: String, domId: String)
-        : this(controlType, domId, null)
+    constructor(actionName: String, controlType: String, domId: String)
+        : this(actionName, controlType, domId, null)
 
-    constructor(controlType: ControlType, domId: String, payload: JSONObject?)
-        : this(controlType.type, domId, payload)
+    constructor(actionName: String, controlType: ControlType, domId: String, payload: JSONObject?)
+        : this(actionName, controlType.type, domId, payload)
 
-    constructor(controlType: ControlType, domId: String)
-        : this(controlType.type, domId)
+    constructor(actionName: String, controlType: ControlType, domId: String)
+        : this(actionName, controlType.type, domId)
 }
 
-object StartActionCommand : DelayedJavascriptCommand(
-    "startAction",
+class StartActionCommand(
+    name: String
+) : DelayedJavascriptCommand(
+    "startAction_$name",
     """
-    frames.startAction = async function() {
-        await frames.action.start();
+    frames.startAction_$name = async function() {
+        await frames.actions.$name.start();
     }
     """.trimMargin()
 )
 
-object ClearFormCommand : JavascriptCommand(
-    "frames.action.clear()"
+class ClearFormCommand(
+    name: String
+) : JavascriptCommand(
+    "frames.actions.$name.clear()"
 )
 
-object SubmitFormCommand : JavascriptCommand(
+class SubmitFormCommand(
+    name: String
+) : JavascriptCommand(
     """
     frames.submit = async function() {
         try {
-            await this.action.submit()
+            await this.actions.$name.submit()
             
-            const response = await this.action.complete()
+            const response = await this.actions.$name.complete()
             $JS_NAMESPACE.handleOnComplete(JSON.stringify(response))
         }
         catch(e) {

@@ -61,11 +61,8 @@ open class FramesHost(private val html: String) : Fragment(R.layout.frames_host)
             )
         }
 
-        view.findViewById<Button>(R.id.submitBtn).setOnClickListener { SubmitFormCommand.post(framesView) }
-        view.findViewById<Button>(R.id.clearBtn).setOnClickListener {
-            ClearFormCommand.post(framesView)
-            messageView.text = ""
-        }
+        view.findViewById<Button>(R.id.submitBtn).setOnClickListener(::onSubmit)
+        view.findViewById<Button>(R.id.clearBtn).setOnClickListener(::onClear)
     }
 
     override fun onComplete(response: String) {
@@ -107,6 +104,14 @@ open class FramesHost(private val html: String) : Fragment(R.layout.frames_host)
 
     override fun onRendered() {
         debug("onRendered()")
+    }
+
+    open fun onSubmit(view: View) {
+        // do nothing by default
+    }
+
+    open fun onClear(view: View) {
+        messageView.text = ""
     }
 
     fun post(command: JavascriptCommand) =
