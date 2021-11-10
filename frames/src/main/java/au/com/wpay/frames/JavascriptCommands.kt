@@ -1,6 +1,5 @@
 package au.com.wpay.frames
 
-import au.com.wpay.frames.dto.ChallengeResponse
 import au.com.wpay.frames.types.ControlType
 import org.json.JSONArray
 import org.json.JSONObject
@@ -217,12 +216,17 @@ class SubmitFormCommand(
     """.trimMargin()
 )
 
+/**
+ * Command to complete an action without requiring user input/action. For example validating
+ * a card with 3DS.
+ */
 class CompleteActionCommand(
     name: String,
     challengeResponses: JSONArray = JSONArray()
-) : JavascriptCommand(
+) : DelayedJavascriptCommand(
+    "completeAction_$name",
     """
-    frames.complete = async function() {
+    frames.completeAction_$name = async function() {
         try {
             // TODO: Currently save flag is placeholder
             const response = await this.actions.$name.complete(false, $challengeResponses)
@@ -232,7 +236,5 @@ class CompleteActionCommand(
             frames.handleError('complete', e)
         }
     }
-    
-    frames.submit();
     """.trimMargin()
 )
