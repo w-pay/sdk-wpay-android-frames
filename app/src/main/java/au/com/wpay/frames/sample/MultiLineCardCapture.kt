@@ -1,8 +1,7 @@
 package au.com.wpay.frames.sample
 
-import au.com.wpay.frames.BuildFramesCommand
-import au.com.wpay.frames.CreateActionControlCommand
-import au.com.wpay.frames.StartActionCommand
+import android.view.View
+import au.com.wpay.frames.*
 import au.com.wpay.frames.types.ActionType
 import au.com.wpay.frames.types.ControlType
 
@@ -12,7 +11,8 @@ class MultiLineCardCapture : FramesHost(HTML) {
         private const val CARD_EXPIRY_DOM_ID = "cardExpiryElement"
         private const val CARD_CVV_DOM_ID = "cardCvvElement"
 
-       const val HTML = """
+        const val ACTION_NAME = "multiLineCardCapture"
+        const val HTML = """
            <html>
               <body>
                 <div id="$CARD_NO_DOM_ID"></div>
@@ -34,11 +34,23 @@ class MultiLineCardCapture : FramesHost(HTML) {
          * Add a multi line card group to the page
          */
         post(BuildFramesCommand(
-            ActionType.CaptureCard(cardCaptureOptions()).toCommand(),
-            StartActionCommand,
-            CreateActionControlCommand(ControlType.CARD_NUMBER, CARD_NO_DOM_ID),
-            CreateActionControlCommand(ControlType.CARD_EXPIRY, CARD_EXPIRY_DOM_ID),
-            CreateActionControlCommand(ControlType.CARD_CVV, CARD_CVV_DOM_ID)
+            ActionType.CaptureCard(cardCaptureOptions()).toCommand(ACTION_NAME),
+            StartActionCommand(ACTION_NAME),
+            CreateActionControlCommand(ACTION_NAME, ControlType.CARD_NUMBER, CARD_NO_DOM_ID),
+            CreateActionControlCommand(ACTION_NAME, ControlType.CARD_EXPIRY, CARD_EXPIRY_DOM_ID),
+            CreateActionControlCommand(ACTION_NAME, ControlType.CARD_CVV, CARD_CVV_DOM_ID)
         ))
+    }
+
+    override fun onSubmit(view: View) {
+        super.onSubmit(view)
+
+        post(SubmitFormCommand(SingleCardCapture.ACTION_NAME))
+    }
+
+    override fun onClear(view: View) {
+        super.onClear(view)
+
+        post(ClearFormCommand(SingleCardCapture.ACTION_NAME))
     }
 }
