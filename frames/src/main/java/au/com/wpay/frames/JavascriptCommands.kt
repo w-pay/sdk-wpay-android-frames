@@ -1,6 +1,8 @@
 package au.com.wpay.frames
 
+import au.com.wpay.frames.dto.ChallengeResponse
 import au.com.wpay.frames.types.ControlType
+import org.json.JSONArray
 import org.json.JSONObject
 import java.io.Serializable
 
@@ -208,6 +210,26 @@ class SubmitFormCommand(
         }
         catch(e) {
             frames.handleError('submit', e)
+        }
+    }
+    
+    frames.submit();
+    """.trimMargin()
+)
+
+class CompleteActionCommand(
+    name: String,
+    challengeResponses: JSONArray = JSONArray()
+) : JavascriptCommand(
+    """
+    frames.complete = async function() {
+        try {
+            // TODO: Currently save flag is placeholder
+            const response = await this.actions.$name.complete(false, $challengeResponses)
+            $JS_NAMESPACE.handleOnComplete(JSON.stringify(response))
+        }
+        catch(e) {
+            frames.handleError('complete', e)
         }
     }
     
