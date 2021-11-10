@@ -48,42 +48,53 @@ open class DelayedJavascriptCommand(
 ) : JavascriptCommand(command)
 
 /**
- * Builds the view that is shown to the user.
- *
  * Combines [DelayedJavascriptCommand]s into an command and executes the result. Each command is
  * executed first to add the async function to the web view.
  *
  * If any error is thrown, it is logged and the Error's `message` is returned to the app.
  * Looking for "chromium" errors in the logs can aid developers debugging why JS code threw
  * errors.
- *
- * On success the FramesView is notified that content has been rendered in the web view.
  */
-class BuildFramesCommand(
-    private val commands: List<DelayedJavascriptCommand>
+open class GroupCommand(
+    name: String,
+    private val commands: List<DelayedJavascriptCommand>,
+    callback: String = ""
 ) : JavascriptCommand(
     """
-    frames.build = async function() {
+    frames.$name = async function() {
         try {
             ${commands.joinToString("\n") { "await frames.${it.functionName}();" }}
-        
-            $JS_NAMESPACE.handleOnRendered();
+            
+            $callback
         }
         catch(e) {
-            frames.handleError('build', e)
+            frames.handleError('$name', e)
         }
     };
     
-    frames.build();
+    frames.$name();
     """.trimMargin()
 ) {
-    constructor(vararg commands: DelayedJavascriptCommand) : this(commands.asList())
+    constructor(name: String, vararg commands: DelayedJavascriptCommand) : this(name, commands.asList())
 
     override fun post(view: FramesView, callback: EvalCallback?) {
         commands.forEach { it.post(view) }
 
         super.post(view, callback)
     }
+}
+
+/**
+ * Builds the view that is shown to the user.
+ *
+ * On success the FramesView is notified that content has been rendered in the web view.
+ */
+class BuildFramesCommand(
+    commands: List<DelayedJavascriptCommand>
+) : GroupCommand("build", commands, """
+    $JS_NAMESPACE.handleOnRendered();
+""".trimMargin()) {
+    constructor(vararg commands: DelayedJavascriptCommand) : this(commands.asList())
 }
 
 /**
