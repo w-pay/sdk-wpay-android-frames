@@ -238,14 +238,9 @@ class CompleteActionCommand(
     "completeAction_$name",
     """
     frames.completeAction_$name = async function() {
-        try {
-            // TODO: Currently save flag is placeholder
-            const response = await this.actions.$name.complete(false, $challengeResponses)
-            $JS_NAMESPACE.handleOnComplete(JSON.stringify(response))
-        }
-        catch(e) {
-            frames.handleError('complete', e)
-        }
+        // TODO: Currently save flag is placeholder
+        const response = await this.actions.$name.complete(false, $challengeResponses)
+        $JS_NAMESPACE.handleOnComplete(JSON.stringify(response))
     }
     """.trimMargin()
 )
