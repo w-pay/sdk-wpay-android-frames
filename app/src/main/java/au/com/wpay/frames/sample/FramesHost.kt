@@ -120,8 +120,7 @@ open class FramesHost(private val html: String) : Fragment(R.layout.frames_host)
     fun cardCaptureOptions() =
         ActionType.CaptureCard.Payload(
             verify = true,
-            save = true,
-            env3DS = null
+            save = true
         )
 }
 
