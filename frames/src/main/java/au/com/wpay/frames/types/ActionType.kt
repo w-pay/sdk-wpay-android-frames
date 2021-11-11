@@ -36,11 +36,13 @@ sealed class ActionType(
         data class Payload(
             val verify: Boolean,
             val save: Boolean,
-            val env3DS: ThreeDSEnv?
+            val useEverydayPay: Boolean = false,
+            val env3DS: ThreeDSEnv? = null
         ) : ActionType.Payload, Serializable {
             override fun toJson() = JSONObject().apply {
                 put("verify", verify)
                 put("save", save)
+                put("useEverydayPay", useEverydayPay)
 
                 env3DS?.let {
                     put("threeDS", JSONObject().apply {
