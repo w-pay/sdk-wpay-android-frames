@@ -6,6 +6,7 @@ import java.io.Serializable
 data class CardCaptureResponse(
     val fraudResponse: FraudResponse?,
     val paymentInstrument: PaymentInstrument?,
+    val itemId: String?,
     val status: Status?,
     val stepUpToken: String?,
     val threeDSError: ThreeDSError?,
@@ -20,6 +21,7 @@ data class CardCaptureResponse(
             CardCaptureResponse(
                 json.optJSONObject("fraudResponse")?.let { FraudResponse.fromJson(it) },
                 json.optJSONObject("paymentInstrument")?.let { PaymentInstrument.fromJson(it) },
+                json.optString("itemId"),
                 json.optJSONObject("status")?.let { Status.fromJson(it) },
                 json.optString("stepUpToken"),
                 json.optString("errorCode")?.let { ThreeDSError.fromCode(it) },
