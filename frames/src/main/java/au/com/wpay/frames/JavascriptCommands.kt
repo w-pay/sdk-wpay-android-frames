@@ -56,7 +56,7 @@ open class DelayedJavascriptCommand(
  * errors.
  */
 open class GroupCommand(
-    name: String,
+    val name: String,
     private val commands: List<DelayedJavascriptCommand>,
     callback: String = ""
 ) : JavascriptCommand(
@@ -92,7 +92,7 @@ open class GroupCommand(
 class BuildFramesCommand(
     commands: List<DelayedJavascriptCommand>
 ) : GroupCommand("build", commands, """
-    $JS_NAMESPACE.handleOnRendered();
+    $JS_NAMESPACE.handleOnRendered('build');
 """.trimMargin()) {
     constructor(vararg commands: DelayedJavascriptCommand) : this(commands.asList())
 }
@@ -177,6 +177,10 @@ class CreateActionControlCommand(
         element.addEventListener(FRAMES.FramesEventType.OnValidated, () => { $JS_NAMESPACE.handleOnValidated('$domId', JSON.stringify(frames.actions.$actionName.errors())) });
         element.addEventListener(FRAMES.FramesEventType.OnBlur, () => { $JS_NAMESPACE.handleOnBlur('$domId') });
         element.addEventListener(FRAMES.FramesEventType.OnFocus, () => { $JS_NAMESPACE.handleOnFocus('$domId') });
+        
+        // this needed in case the element is for a 3DS challenge
+        element.addEventListener(FRAMES.FramesCardinalEventType.OnRender, () => { $JS_NAMESPACE.handleOnRendered('$actionName') });
+        element.addEventListener(FRAMES.FramesCardinalEventType.OnClose, () => { $JS_NAMESPACE.handleOnRemoved('$actionName') });
     }
     """.trimMargin()
 ) {

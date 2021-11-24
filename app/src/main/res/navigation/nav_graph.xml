@@ -15,4 +15,9 @@
         android:name="au.com.wpay.frames.sample.MultiLineCardCapture"
         android:label="MultiLineCardCapture"
         />
+    <fragment
+        android:id="@+id/threeDSCardCapture"
+        android:name="au.com.wpay.frames.sample.ThreeDSCardCapture"
+        android:label="ThreeDSCardCapture"
+        />
 </navigation>

@@ -102,8 +102,12 @@ open class FramesHost(private val html: String) : Fragment(R.layout.frames_host)
          */
     }
 
-    override fun onRendered() {
-        debug("onRendered()")
+    override fun onRendered(id: String) {
+        debug("onRendered($id)")
+    }
+
+    override fun onRemoved(id: String) {
+        debug("onRemoved($id)")
     }
 
     open fun onSubmit(view: View) {
@@ -117,7 +121,7 @@ open class FramesHost(private val html: String) : Fragment(R.layout.frames_host)
     fun post(command: JavascriptCommand) =
         command.post(framesView)
 
-    fun cardCaptureOptions() =
+    open fun cardCaptureOptions() =
         ActionType.CaptureCard.Payload(
             verify = true,
             save = true
