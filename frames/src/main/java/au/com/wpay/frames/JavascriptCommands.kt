@@ -5,7 +5,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.io.Serializable
 
-const val JS_SDK_VERSION = "2.0.2"
+const val JS_SDK_VERSION = "2.1.0"
 
 /**
  * A "Javascript command" is a piece of Javascript that can be evaluated inside the [FramesView]

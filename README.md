@@ -28,7 +28,7 @@ the usage of the SDK with native logic and UI components eg: Buttons.
 
 The Android SDK comes bundled with the Frames JS SDK so that the Android SDK can use a known
 version at runtime. The JS file in the `assets` dir is taken from the `dist` of the Frames SDK
-repo and currently targets version `2.0.2`.
+repo and currently targets version `2.1.0`.
 
 ## Authentication
 
