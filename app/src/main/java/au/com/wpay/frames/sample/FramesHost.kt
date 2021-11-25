@@ -69,7 +69,12 @@ open class FramesHost(private val html: String) : Fragment(R.layout.frames_host)
         debug("onComplete(response: $response)")
 
         val data = CardCaptureResponse.fromJson(response)
-        val message = "${data.status?.responseText} - ${data.paymentInstrument?.itemId}"
+        val id: String? = when {
+            data.paymentInstrument?.itemId != null -> { data.paymentInstrument?.itemId }
+            else -> { data.itemId }
+        }
+
+        val message = "${data.status?.responseText ?: ""} - ${id!!}"
 
         messageView.text = message
     }
