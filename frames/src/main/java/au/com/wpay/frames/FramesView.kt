@@ -90,8 +90,17 @@ class FramesView @JvmOverloads constructor(
 
         /**
          * Called when JS SDK Action has added content to the host page.
+         *
+         * @param id A command specific ID to identify the content that was just rendered.
          */
-        fun onRendered()
+        fun onRendered(id: String)
+
+        /**
+         * Called when JS SDK Action has removed content from the host page.
+         *
+         * @param id A command specific ID to identify the content that was just removed.
+         */
+        fun onRemoved(id: String)
     }
 
     /**
@@ -230,11 +239,20 @@ class FramesView @JvmOverloads constructor(
     }
 
     @JavascriptInterface
-    fun handleOnRendered() {
-        log("handleOnRendered()")
+    fun handleOnRendered(id: String) {
+        log("handleOnRendered($id)")
 
         post {
-            callback?.onRendered()
+            callback?.onRendered(id)
+        }
+    }
+
+    @JavascriptInterface
+    fun handleOnRemoved(id: String) {
+        log("handleOnRemoved($id)")
+
+        post {
+            callback?.onRemoved(id)
         }
     }
 

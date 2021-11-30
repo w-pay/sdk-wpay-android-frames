@@ -23,5 +23,11 @@
             android:icon="@drawable/ic_launcher_foreground"
             android:title="MultiLineCardCapture"
             />
+
+        <item
+            android:id="@+id/threeDSCardCapture"
+            android:icon="@drawable/ic_launcher_foreground"
+            android:title="ThreeDSCardCapture"
+            />
     </group>
 </menu>

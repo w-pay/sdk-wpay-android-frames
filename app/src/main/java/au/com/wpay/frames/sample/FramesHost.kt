@@ -69,7 +69,12 @@ open class FramesHost(private val html: String) : Fragment(R.layout.frames_host)
         debug("onComplete(response: $response)")
 
         val data = CardCaptureResponse.fromJson(response)
-        val message = "${data.status?.responseText} - ${data.paymentInstrument?.itemId}"
+        val id: String? = when {
+            data.paymentInstrument?.itemId != null -> { data.paymentInstrument?.itemId }
+            else -> { data.itemId }
+        }
+
+        val message = "${data.status?.responseText ?: ""} - ${id!!}"
 
         messageView.text = message
     }
@@ -102,8 +107,12 @@ open class FramesHost(private val html: String) : Fragment(R.layout.frames_host)
          */
     }
 
-    override fun onRendered() {
-        debug("onRendered()")
+    override fun onRendered(id: String) {
+        debug("onRendered($id)")
+    }
+
+    override fun onRemoved(id: String) {
+        debug("onRemoved($id)")
     }
 
     open fun onSubmit(view: View) {
@@ -117,7 +126,7 @@ open class FramesHost(private val html: String) : Fragment(R.layout.frames_host)
     fun post(command: JavascriptCommand) =
         command.post(framesView)
 
-    fun cardCaptureOptions() =
+    open fun cardCaptureOptions() =
         ActionType.CaptureCard.Payload(
             verify = true,
             save = true
