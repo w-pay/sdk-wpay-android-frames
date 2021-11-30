@@ -123,10 +123,17 @@ class ThreeDSCardCapture: FramesHost(HTML) {
 
         if (response.threeDSError == ThreeDSError.TOKEN_REQUIRED) {
             validateCard(response.threeDSToken!!)
+
+            return
         }
-        else {
+
+        if (response.threeDSError == null) {
             super.onComplete(data)
+
+            return
         }
+
+        onError(FatalError("3DS error - ${response.threeDSError!!.code}"))
     }
 
     private fun validateCard(threeDSToken: String) {
