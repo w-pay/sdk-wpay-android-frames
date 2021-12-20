@@ -5,7 +5,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.io.Serializable
 
-const val JS_SDK_VERSION = "2.1.0"
+const val JS_SDK_VERSION = "2.1.3"
 
 /**
  * A "Javascript command" is a piece of Javascript that can be evaluated inside the [FramesView]
@@ -178,6 +178,10 @@ class CreateActionControlCommand(
         element.addEventListener(FRAMES.FramesEventType.OnBlur, () => { $JS_NAMESPACE.handleOnBlur('$domId') });
         element.addEventListener(FRAMES.FramesEventType.OnFocus, () => { $JS_NAMESPACE.handleOnFocus('$domId') });
         
+        // this will only be fired once per form.
+        element.addEventListener(FRAMES.FramesEventType.FormValid, () => { $JS_NAMESPACE.handleFormValid(true) });
+        element.addEventListener(FRAMES.FramesEventType.FormInvalid, () => { $JS_NAMESPACE.handleFormValid(false) });
+
         // this needed in case the element is for a 3DS challenge
         element.addEventListener(FRAMES.FramesCardinalEventType.OnRender, () => { $JS_NAMESPACE.handleOnRendered('$actionName') });
         element.addEventListener(FRAMES.FramesCardinalEventType.OnClose, () => { $JS_NAMESPACE.handleOnRemoved('$actionName') });
@@ -237,13 +241,13 @@ class SubmitFormCommand(
  */
 class CompleteActionCommand(
     name: String,
+    save: Boolean = true,
     challengeResponses: JSONArray = JSONArray()
 ) : DelayedJavascriptCommand(
     "completeAction_$name",
     """
     frames.completeAction_$name = async function() {
-        // TODO: Currently save flag is placeholder
-        const response = await this.actions.$name.complete(false, $challengeResponses)
+        const response = await this.actions.$name.complete($save, $challengeResponses)
         $JS_NAMESPACE.handleOnComplete(JSON.stringify(response))
     }
     """.trimMargin()
