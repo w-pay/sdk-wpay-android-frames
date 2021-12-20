@@ -5,7 +5,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.io.Serializable
 
-const val JS_SDK_VERSION = "2.1.0"
+const val JS_SDK_VERSION = "2.1.3"
 
 /**
  * A "Javascript command" is a piece of Javascript that can be evaluated inside the [FramesView]
@@ -237,13 +237,13 @@ class SubmitFormCommand(
  */
 class CompleteActionCommand(
     name: String,
+    save: Boolean = true,
     challengeResponses: JSONArray = JSONArray()
 ) : DelayedJavascriptCommand(
     "completeAction_$name",
     """
     frames.completeAction_$name = async function() {
-        // TODO: Currently save flag is placeholder
-        const response = await this.actions.$name.complete(false, $challengeResponses)
+        const response = await this.actions.$name.complete($save, $challengeResponses)
         $JS_NAMESPACE.handleOnComplete(JSON.stringify(response))
     }
     """.trimMargin()

@@ -148,7 +148,7 @@ class ThreeDSCardCapture: FramesHost(HTML) {
         framesHandler = ::onCardCapture
 
         post(GroupCommand("completeCardCapture",
-            CompleteActionCommand(CARD_CAPTURE_ACTION_NAME, JSONArray().apply {
+            CompleteActionCommand(CARD_CAPTURE_ACTION_NAME, cardCaptureOptions().save, JSONArray().apply {
                 response.challengeResponse?.let { put(it.toJson()) }
             })
         ))
