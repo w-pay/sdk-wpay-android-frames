@@ -93,6 +93,10 @@ open class FramesHost(private val html: String) : Fragment(R.layout.frames_host)
         debug("onValidationChange($domId, isValid: $isValid)")
     }
 
+    override fun onFormValidationChange(isValid: Boolean) {
+        debug("onFormValidationChange($isValid)")
+    }
+
     override fun onFocusChange(domId: String, isFocussed: Boolean) {
         debug("onFocusChange($domId, isFocussed: $isFocussed)")
     }

@@ -75,6 +75,15 @@ class FramesView @JvmOverloads constructor(
         fun onValidationChange(domId: String, isValid: Boolean)
 
         /**
+         * Called when the validation status of the form has changed.
+         *
+         * Can be used to coordinate the validation status of multiple elements
+         *
+         * @param isValid Whether the form itself is valid
+         */
+        fun onFormValidationChange(isValid: Boolean)
+
+        /**
          * Called when the focus has changed on an element
          *
          * @param domId The ID of the element in the HTML DOM tree
@@ -184,6 +193,11 @@ class FramesView @JvmOverloads constructor(
      */
     fun setCallback(callback: Callback) {
         this.callback = callback
+    }
+
+    @JavascriptInterface
+    fun handleFormValid(isValid: Boolean) {
+        callback?.onFormValidationChange(isValid)
     }
 
     /**
