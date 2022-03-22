@@ -51,10 +51,11 @@ to `ERROR` for security.
 The `app` module of the project contains a sample app that uses the SDK. The activities in the
 sample app document the workflow/usage of the Frames SDK.
 
-The sample app highlights the ability to combine native controls like buttons with web controls.
+The sample app highlights the ability to combine native controls like buttons with web controls,
+and doubles as a test harness for development.
 
 Once a card has been tokenised, the instrument ID is displayed. Using that ID the payment instrument
-can then used. THe new instrument will be in the customer's instrument list. To tokenise the same
+can then used. The new instrument will be in the customer's instrument list. To tokenise the same
 card again, the instrument will need to be removed from the customer's profile first.
 
 An example of how to use 3DS is also included. Apps will need to determine the best way to display
@@ -64,7 +65,12 @@ See:
  - List customer payment instruments `GET /instore/customer/instruments`
  - Remove payment instrument `DELETE /instore/customer/instruments/:id` 
 
-# TODO
+# Testing
 
-- Testing
-- Publishing
+There are no automated tests for the library as the library is a wrapper around the Frames JS SDK
+which makes automated testing difficult. The sample app doubles as a development/testing harness for
+the SDK.
+
+# Publishing
+
+Newer versions of the SDK are tagged in GitHub and are published via JitPack.
