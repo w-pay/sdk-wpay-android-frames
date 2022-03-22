@@ -73,4 +73,4 @@ the SDK.
 
 # Publishing
 
-Newer versions of the SDK are tagged in GitHub and are published via JitPack.
+Newer versions of the SDK are tagged in GitHub and are published via [JitPack](https://jitpack.io/#w-pay/sdk-wpay-android-frames).
